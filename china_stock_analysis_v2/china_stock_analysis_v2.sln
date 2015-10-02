@@ -1,0 +1,20 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 11.00
+# Visual Studio 2010
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "china_stock_analysis_v2", "china_stock_analysis_v2\china_stock_analysis_v2.vcxproj", "{D50618CA-82B8-42CD-9938-AD216F2F6C0F}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Win32 = Debug|Win32
+		Release|Win32 = Release|Win32
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{D50618CA-82B8-42CD-9938-AD216F2F6C0F}.Debug|Win32.ActiveCfg = Debug|Win32
+		{D50618CA-82B8-42CD-9938-AD216F2F6C0F}.Debug|Win32.Build.0 = Debug|Win32
+		{D50618CA-82B8-42CD-9938-AD216F2F6C0F}.Release|Win32.ActiveCfg = Release|Win32
+		{D50618CA-82B8-42CD-9938-AD216F2F6C0F}.Release|Win32.Build.0 = Release|Win32
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+EndGlobal
