@@ -3,6 +3,8 @@
 
 #include "stdafx.h"
 #include "china_stock_analysis_v2.h"
+#include <iostream>
+#include <string>
 
 #ifdef _DEBUG
 #define new DEBUG_NEW
@@ -14,6 +16,16 @@
 CWinApp theApp;
 
 using namespace std;
+
+void start()
+{
+	std::string stockName, selectedMonth;
+	std::cout << "请输入股票代码（例如：600295、002362）：";
+	std::cin >> stockName;
+	std::cout << "请输入需要模拟的月份（例如：201509）：";
+	std::cin >> selectedMonth;
+	system("pause");
+}
 
 int _tmain(int argc, TCHAR* argv[], TCHAR* envp[])
 {
@@ -32,7 +44,7 @@ int _tmain(int argc, TCHAR* argv[], TCHAR* envp[])
 		}
 		else
 		{
-			printf("hello world!\n");
+			start();
 		}
 	}
 	else
@@ -41,6 +53,5 @@ int _tmain(int argc, TCHAR* argv[], TCHAR* envp[])
 		_tprintf(_T("错误: GetModuleHandle 失败\n"));
 		nRetCode = 1;
 	}
-
 	return nRetCode;
 }

@@ -30,12 +30,57 @@
     <ClInclude Include="china_stock_analysis_v2.h">
       <Filter>头文件</Filter>
     </ClInclude>
+    <ClInclude Include="base_type.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="micro.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="StockDataDownloader.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="StockDataLoader.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="utility.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="curl\curl.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="curl\curlver.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="curl\easy.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="curl\mprintf.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="curl\multi.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="curl\stdcheaders.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="curl\types.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="stdafx.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
     <ClCompile Include="china_stock_analysis_v2.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="StockDataDownloader.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="StockDataLoader.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="utility.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
   </ItemGroup>
