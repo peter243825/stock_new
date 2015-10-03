@@ -37,12 +37,6 @@ public:
 	~CStockDataDownloader(void);
 
 private:
-	enum ESourceType
-	{
-		NOT_SET = 0,
-		YAHOO_SOURCE,
-		SINA_SOURCE
-	};
 	template <typename T>
 	bool SetOption(CURLoption option, T parameter)
 	{

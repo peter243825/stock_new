@@ -59,7 +59,7 @@ size_t CStockDataLoader::LoadFromString(const std::string& dataStr, bool filterN
 		}
 		mStockData.dataVector.push_back(item);
 	}
-	sort(mStockData.dataVector.begin(), mStockData.dataVector.end(), StockDataItem::LaterThan);
+	//sort(mStockData.dataVector.begin(), mStockData.dataVector.end(), StockDataItem::LaterThan);
 	return mStockData.dataVector.size();
 }
 

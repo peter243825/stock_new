@@ -52,17 +52,19 @@ struct DateType
 								  31, 30, 31, 31,
 								  30, 31, 30, 31, 31};//dayCount[0]代表上一年的12月，dayCount[13]代表下一年的1月
 		//correct year & month firstly
+		while(month <= 0)
+		{
+			month += 12;
+			year--;
+		}
+		while (month > 12)
+		{
+			month -= 12;
+			year++;
+		}
 		if (year < 0)
 		{
 			year = 0;
-		}
-		if (month <= 0)
-		{
-			month = 1;
-		}
-		else if (month > 12)
-		{
-			month = 12;
 		}
 		while (date <= 0 || date > dayCount[month])
 		{
@@ -131,6 +133,18 @@ struct DateType
 		if (date1.year > date2.year ||
 			(date1.year == date2.year && date1.month > date2.month) ||
 			(date1.year == date2.year && date1.month == date2.month && date1.date > date2.date))
+		{
+			return true;
+		}
+		else
+		{
+			return false;
+		}
+	}
+
+	static bool IsSameMonth(const DateType& date1, const DateType& date2) //return true if date1's year & month is the same as date2's: IsSameMonth(2013-12-15, 2013-12-9) == true
+	{
+		if (date1.year == date2.year && date1.month == date2.month)
 		{
 			return true;
 		}

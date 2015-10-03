@@ -173,4 +173,16 @@ double CalculateStandardDeviationFromDataVector(const T1& beginIter,
 	return sqrt(sum / count);
 }
 
+/*
+ *  PrintLog：打印日志（同步输出到控制台以及文件中）
+ *  @logString：单条日志的内容
+ */
+void PrintLog(const std::string& logString);
+
+/*
+ *  GetTimeStampString：得到当前的时间戳（例如：2015-10-03 18:49:20.030）
+ *  @return：时间戳的字符串
+ */
+std::string GetTimeStampString();
+
 #endif //UTILITY_H

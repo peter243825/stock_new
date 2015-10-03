@@ -1,6 +1,7 @@
 #include "stdafx.h"
 
 #include "utility.h"
+#include "micro.h"
 #include <algorithm>
 #include <stdlib.h>
 #include <stdio.h>
@@ -200,17 +201,45 @@ int32_t ReadFromFile(const std::string& fileName, std::string& context)
 {
 	FILE *infile;
 	int32_t ret;
-	char buffer[1024];
+	DEFINE_TEMP_BUFFER(buffer);
 	context.clear();
 	ret = fopen_s(&infile, fileName.c_str(), "r");
 	if (ret != 0)
 	{
 		return ret;
 	}
-	while (fgets(buffer, 1024, infile))
+	while (fgets(buffer, TEMP_BUFFER_SIZE, infile))
 	{
 		context += buffer;
 	}
 	fclose(infile);
 	return (int32_t) context.size();
+}
+
+void PrintLog(const std::string& logString)
+{
+	static boolean inited = false;
+	static std::string logFileName;
+	if (!inited)
+	{
+		SYSTEMTIME time;
+		GetLocalTime(&time);
+		DEFINE_TEMP_BUFFER(temp);
+		sprintf_s(temp, "Log_%04d%02d%02d-%02d%02d%02d%04d.txt", time.wYear, time.wMonth, time.wDay, time.wHour, time.wMinute, time.wSecond, time.wMilliseconds);
+		logFileName = CacheDataDir + std::string(temp);
+		inited = true;
+	}
+	std::string outputString("[");
+	outputString += GetTimeStampString() + "]\t\t" + logString + "\n";
+	WriteToFile(logFileName, outputString, true);
+	cout << outputString;
+}
+
+std::string GetTimeStampString()
+{
+	SYSTEMTIME time;
+	GetLocalTime(&time);
+	DEFINE_TEMP_BUFFER(temp);
+	sprintf_s(temp, "%04d-%02d-%02d %02d:%02d:%02d.%03d", time.wYear, time.wMonth, time.wDay, time.wHour, time.wMinute, time.wSecond, time.wMilliseconds);
+	return string(temp);
 }
