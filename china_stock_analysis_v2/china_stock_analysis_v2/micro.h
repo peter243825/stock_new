@@ -17,8 +17,11 @@ const std::string StableDataDir = "stable_data\\";
 const std::string CacheDataDir = "cache_data\\";
 const std::string ResultDir = "result\\";
 const std::string BaslUrlOfSinaSource = "http://biz.finance.sina.com.cn/stock/flash_hq/kline_data.php?&rand=random(10000)&";
-const std::string ResultFile = ResultDir + "result.txt";
-const std::string ShenZhenStockMarketID = "399001.SZ"; //深证指数的股票ID
-const std::string ShangHaiStockMarketID = "000001.SS"; //上证指数的股票ID
+const std::string BatchAnalysisFile = StableDataDir + "批量分析.txt";
+const std::string BatchPredictFile = StableDataDir + "批量预测.txt";
+const std::string BatchAnalysisResultFile = ResultDir + "批量分析结果.txt";
+const std::string BatchPredictsResultFile = ResultDir + "批量预测结果.txt";
+const std::string ShenZhenStockMarketID = "sz399001"; //深证指数的股票ID
+const std::string ShangHaiStockMarketID = "sh000001"; //上证指数的股票ID
 
 #endif //__CONST_DEFINE__

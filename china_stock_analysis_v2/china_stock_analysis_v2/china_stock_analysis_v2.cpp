@@ -7,6 +7,7 @@
 #include <iostream>
 #include <string>
 #include "StockDataLoader.h"
+#include "AnalysisEngine.h"
 
 #ifdef _DEBUG
 #define new DEBUG_NEW
@@ -19,174 +20,112 @@ CWinApp theApp;
 
 using namespace std;
 
-void start()
+void singleAnalysisMode()
 {
-	PrintLog("程序开始启动");
+	PrintLog("个股分析");
 	std::string stockID, selectedMonth;
-	DEFINE_TEMP_BUFFER(tempString);
 	std::cout << "请输入股票代码（例如：600295、002362）：";
 	std::cin >> stockID;
 	std::cout << "请输入需要模拟的月份（例如：201509）：";
 	std::cin >> selectedMonth;
-	PrintLog(std::string("股票代码：") + stockID + "，模拟月份：" + selectedMonth);
+	CAnalysisEngine::SingleStockAnalysis(stockID, selectedMonth);
+	PrintLog("个股分析结束\n");
+}
 
-	//计算日期区间（开始时间为模拟月份减2的1号，结束时间为模拟月份的最后一天）
-	int year = atoi(selectedMonth.substr(0, 4).c_str());
-	int month = atoi(selectedMonth.substr(4).c_str());
-	DateType beginDate(year, month - 2, 1);
-	beginDate.Adjust();
-	DateType endDate(year, month + 1, 0);
-	endDate.Adjust();
-	DateType lastMonth(year, month - 1, 1);
-	DateType selectedTime(year, month, 1);
-	
-	do 
+void batchAnalysisMode()
+{
+	PrintLog("批量分析");
+	DEFINE_TEMP_BUFFER(tempString);
+	size_t i;
+	std::string context, selectedMonth;
+	StockList stockList;
+	if (ReadFromFile(BatchAnalysisFile, context) <= 0)
 	{
-	PrintLog(std::string("下载数据：") + beginDate.ToString() + " -> " + endDate.ToString());
-	CStockDataDownloader downloader;
-	bool ret = downloader.Download(stockID, beginDate, endDate);
-	if (!ret)
-	{
-		PrintLog("数据下载失败");
-		break;
+		PrintLog("读取文件错误");
+		return;
 	}
-	PrintLog("读取数据");
-	std::string fileName = CacheDataDir + stockID + ".csv";
-	CStockDataLoader loader;
-	size_t size = loader.LoadFromFile(fileName, true);
-	if (size <= 0)
+	vector<string> splitResult = StringSplitter(context, "\n");
+	if (splitResult.size() < 1) //bad split
 	{
-		PrintLog("读取数据失败");
-		break;
+		PrintLog("读取文件错误");
+		return;
 	}
-	StockData data = loader.GetStockData();
-	sprintf_s(tempString, "数据量：%d", size);
+	for (i = 0; i < splitResult.size(); ++i)
+	{
+		vector<string> subSplitResult = StringSplitter(splitResult[i], "\t");
+		if (subSplitResult.size() <= 1) //bad split
+		{
+			continue;
+		}
+		if (subSplitResult.size() > 2) //there is one or more space in stock's name, merge them
+		{
+			size_t j;
+			for (j = 2; j < subSplitResult.size(); ++j)
+			{
+				subSplitResult[1] += (string(" ") + subSplitResult[j]);
+			}
+		}
+		StockListItem item;
+		item.stockID = subSplitResult[0];
+		item.stockName = subSplitResult[1];
+		stockList.push_back(item);
+	}
+	if (stockList.empty())
+	{
+		PrintLog("股票列表为空");
+		return;
+	}
+	sprintf_s(tempString, "股票列表长度：%d", stockList.size());
 	PrintLog(tempString);
-	PrintLog("开始模拟");
-	std::vector<StockDataItem>::iterator iter(data.dataVector.begin()), endIter(data.dataVector.end());
-	for (; iter != endIter; ++iter)
+
+	std::cout << "请输入需要模拟的月份（例如：201509）：";
+	std::cin >> selectedMonth;
+	sprintf_s(tempString, "%s的批量分析结果\n", selectedMonth.c_str());
+	context = string(tempString);
+	for (i = 0; i < stockList.size(); ++i)
 	{
-		if (DateType::IsSameMonth(iter->date, lastMonth))
+		StockListItem item = stockList[i];
+		std::string result = CAnalysisEngine::SingleStockAnalysis(item.stockID, selectedMonth);
+		context += (item.stockID + "\t" + item.stockName + "\t" + result + "\n");
+	}
+	WriteToFile(BatchAnalysisResultFile, context);
+	PrintLog("批量分析结束\n");
+}
+
+void start()
+{
+	PrintLog("程序开始启动");
+	while (true)
+	{
+		std::string selectedMode;
+		std::cout << "请选择运行模式：\n\n1. 个股分析\n2. 批量分析\n3. 个股当日预测（暂不可用）\n4. 批量当日预测（暂不可用）\n\n10. 退出程序\n\n请输入功能代码（1~10）：";
+		std::cin >> selectedMode;
+		if (selectedMode == "1")
+		{
+			singleAnalysisMode();
+		}
+		else if (selectedMode == "2")
+		{
+			batchAnalysisMode();
+		}
+		else if (selectedMode == "3")
+		{
+			std::cout << "功能暂不可用\n\n";
+		}
+		else if (selectedMode == "4")
+		{
+			std::cout << "功能暂不可用\n\n";
+		}
+		else if (selectedMode == "10")
 		{
 			break;
 		}
-	}
-	if (iter == endIter)
-	{
-		PrintLog("没有找到上月K线数据");
-		break;
-	}
-	double lowPriceInMonth = iter->lowPrice, highPriceInMonth = iter->highPrice, closePriceInMonth;
-	for (; iter != endIter; ++iter)
-	{
-		if (!DateType::IsSameMonth(iter->date, lastMonth))
-		{
-			break;
-		}
-		if (lowPriceInMonth > iter->lowPrice)
-		{
-			lowPriceInMonth = iter->lowPrice;
-		}
-		if (highPriceInMonth < iter->highPrice)
-		{
-			highPriceInMonth = iter->highPrice;
-		}
-		closePriceInMonth = iter->closePrice;
-	}
-	double half = (highPriceInMonth + lowPriceInMonth) / 2;
-	double deltaHigh = fabs(closePriceInMonth - highPriceInMonth);
-	double deltaLow = fabs(closePriceInMonth - lowPriceInMonth);
-	double deltaHalf = fabs(closePriceInMonth - half);
-	std::string lastMonthState;
-	if (deltaHigh < deltaLow)
-	{
-		if (deltaHigh < deltaHalf)
-		{
-			lastMonthState = "进攻局";
-		}
 		else
 		{
-			lastMonthState = "蓄势局";
+			std::cout << "未识别的模式，请重新选择\n\n";
 		}
 	}
-	else
-	{
-		if (deltaLow < deltaHalf)
-		{
-			lastMonthState = "退守局";
-		}
-		else
-		{
-			lastMonthState = "蓄势局";
-		}
-	}
-	sprintf_s(tempString, "上月K线盘局：最高 %.2lf，最低 %.2lf，月收盘价 %.2lf，%s", highPriceInMonth, lowPriceInMonth, closePriceInMonth, lastMonthState.c_str());
-	PrintLog(tempString);
-	if (iter == endIter)
-	{
-		PrintLog("没有找到选定月的K线数据");
-		break;
-	}
-	double crucialHigh, crucialLow;
-	if (lastMonthState == "退守局")
-	{
-		PrintLog("退守局不操作");
-		break;
-	}
-	else if (lastMonthState == "进攻局")
-	{
-		crucialHigh = highPriceInMonth;
-		crucialLow = iter->lowPrice;
-	} 
-	else
-	{
-		crucialHigh = iter->highPrice;
-		crucialLow = iter->lowPrice;
-	}
-	sprintf_s(tempString, "选定月的关键区域：下限 %.2lf，上限 %.2lf", crucialLow, crucialHigh);
-	PrintLog(tempString);
-	data.GenerateEXPMADataVector(7);
-	double buyInPrice = -1;
-	double profit = 0;
-
-	for (; iter != endIter; ++iter)
-	{
-		size_t expmaIndex = iter - data.dataVector.begin() - 6;
-		double predictExpma;
-		if (expmaIndex >= 2)
-		{
-			 predictExpma = data.expmaDataVector[expmaIndex - 1] * 2 - data.expmaDataVector[expmaIndex - 2];
-		}
-		else if (expmaIndex >= 1)
-		{
-			predictExpma = data.expmaDataVector[expmaIndex - 1];
-		}
-		else
-		{
-			predictExpma = -1000;
-		}
-		//买入信号：股价上涨，7日均线上扬，收盘在7日均线之上，收盘在关键区域之上
-		if (buyInPrice < 0 && iter->closePrice > iter->openPrice && data.expmaDataVector[expmaIndex] > predictExpma && iter->closePrice > data.expmaDataVector[expmaIndex] && iter->closePrice > deltaHigh)
-		{
-			buyInPrice = (iter->closePrice + iter->openPrice) / 2;
-			sprintf_s(tempString, "%s出现买入信号，买入价：%.2lf", iter->date.ToString().c_str(), buyInPrice);
-		}
-		//卖出信号：收盘在7日均线之下，或股价跌破关键区域
-		if (buyInPrice > 0 && iter->closePrice < predictExpma && iter->closePrice < deltaHigh)
-		{
-			double sellOutPrice = (iter->closePrice + iter->openPrice) / 2;
-			sprintf_s(tempString, "%s出现卖出信号，卖出价：%.2lf", iter->date.ToString().c_str(), sellOutPrice);
-			profit += (sellOutPrice - buyInPrice) / buyInPrice;
-			buyInPrice = -1;
-		}
-	}
-	if (buyInPrice > 0)
-	{
-		profit += (data.dataVector.rbegin()->closePrice - buyInPrice) / buyInPrice;
-	}
-	sprintf_s(tempString, "模拟结束，该月总收益为：%.2lf%%", profit * 100);
 	PrintLog("程序运行结束");
-	} while (false);
 	system("pause");
 }
 

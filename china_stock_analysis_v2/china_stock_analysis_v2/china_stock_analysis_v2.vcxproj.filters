@@ -66,6 +66,9 @@
     <ClInclude Include="curl\types.h">
       <Filter>头文件</Filter>
     </ClInclude>
+    <ClInclude Include="AnalysisEngine.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="stdafx.cpp">
@@ -81,6 +84,9 @@
       <Filter>源文件</Filter>
     </ClCompile>
     <ClCompile Include="utility.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="AnalysisEngine.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
   </ItemGroup>

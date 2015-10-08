@@ -103,11 +103,12 @@ std::string CStockDataDownloader::GenerateUrl( const std::string& stockID, const
 	string url;
 	DEFINE_TEMP_BUFFER(buffer);
 	url = BaslUrlOfSinaSource;
-	std::string stockIDOfSina;
+	std::string stockIDOfSina = "";
 	if (stockID[0] == '6') //上海股票以‘6’开头 
 	{
 		stockIDOfSina = "sh";
-	} else
+	}
+	else if (isdigit(stockID[0]))
 	{
 		stockIDOfSina = "sz";
 	}

@@ -82,6 +82,7 @@
     <None Include="ReadMe.txt" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="AnalysisEngine.h" />
     <ClInclude Include="base_type.h" />
     <ClInclude Include="china_stock_analysis_v2.h" />
     <ClInclude Include="curl\curl.h" />
@@ -100,6 +101,7 @@
     <ClInclude Include="utility.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="AnalysisEngine.cpp" />
     <ClCompile Include="china_stock_analysis_v2.cpp" />
     <ClCompile Include="stdafx.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Create</PrecompiledHeader>
